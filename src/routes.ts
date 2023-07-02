@@ -11,7 +11,9 @@ routes.get("/", (req, res) => {
 
 routes.post("/identify", async (req, res) => {
   try {
-    const { phoneNumber, email }: IdentityRequest = req.body;
+    let { phoneNumber, email }: IdentityRequest = req.body;
+    if(!email) email = undefined;
+    if(!phoneNumber) phoneNumber = undefined;
     const processor = new IdentityProcessor(email, phoneNumber);
     const response: IdentityResponse = await processor.process();
     return res.status(200).json(response);

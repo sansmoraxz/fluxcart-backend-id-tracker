@@ -13,8 +13,8 @@ type Contact = {
 };
 
 class IdentityProcessor {
-  email: string;
-  phoneNumber: string;
+  email?: string;
+  phoneNumber?: string;
   currentTimestamp: Date;
 
   contracts: any[];
@@ -192,10 +192,10 @@ class IdentityProcessor {
         primaryContact
       );
     }
-    const isNewEmail = !linkedContacts.some(
+    const isNewEmail = this.email && !linkedContacts.some(
       (contact) => contact.email === this.email
     );
-    const isNewPhoneNumber = !linkedContacts.some(
+    const isNewPhoneNumber = this.phoneNumber && !linkedContacts.some(
       (contact) => contact.phoneNumber === this.phoneNumber
     );
     if (isNewEmail || isNewPhoneNumber) {

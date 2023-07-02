@@ -1,6 +1,6 @@
 type IdentityRequest = {
-    email?: string;
-    phoneNumber?: string;
+    email: string | null | undefined;
+    phoneNumber: string | null | undefined;
 };
 
 type IdentityResponse = {
