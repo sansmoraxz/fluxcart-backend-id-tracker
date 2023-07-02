@@ -20,4 +20,13 @@ routes.post("/identify", async (req, res) => {
   }
 });
 
+routes.get("/db", async (req, res) => {
+  try {
+    const result = await dbclient.contact.findMany();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 export default routes;
