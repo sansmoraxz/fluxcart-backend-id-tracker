@@ -10,10 +10,14 @@ routes.get("/", (req, res) => {
 });
 
 routes.post("/identify", async (req, res) => {
-  const { phoneNumber, email }: IdentityRequest = req.body;
-  const processor = new IdentityProcessor(email, phoneNumber);
-  const response: IdentityResponse = await processor.process();
-  return res.json(response);
+  try {
+    const { phoneNumber, email }: IdentityRequest = req.body;
+    const processor = new IdentityProcessor(email, phoneNumber);
+    const response: IdentityResponse = await processor.process();
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 export default routes;
