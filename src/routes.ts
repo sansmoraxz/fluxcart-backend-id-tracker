@@ -16,7 +16,7 @@ routes.post("/identify", async (req, res) => {
     const response: IdentityResponse = await processor.process();
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 

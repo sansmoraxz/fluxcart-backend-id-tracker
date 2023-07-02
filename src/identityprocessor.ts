@@ -14,12 +14,12 @@ type Contact = {
 
 class IdentityProcessor {
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
   currentTimestamp: Date;
 
   contracts: any[];
 
-  constructor(email: string, phoneNumber: number) {
+  constructor(email: string, phoneNumber: string) {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.currentTimestamp = new Date();
@@ -29,11 +29,11 @@ class IdentityProcessor {
     const newContact = await dbclient.contact.create({
       data: {
         email: this.email,
-        phoneNumber: this.phoneNumber.toString(),
+        phoneNumber: this.phoneNumber,
         linkPrecedence: "primary",
       },
     });
-    return;
+    return newContact;
   }
 
   private async createSecondaryContact(
@@ -42,7 +42,7 @@ class IdentityProcessor {
     const newContact = await dbclient.contact.create({
       data: {
         email: this.email,
-        phoneNumber: this.phoneNumber.toString(),
+        phoneNumber: this.phoneNumber,
         linkPrecedence: "secondary",
         linkedId: primaryContact.id,
       },
@@ -90,11 +90,11 @@ class IdentityProcessor {
   private async findAllLinkedContacts(): Promise<Contact[]> {
     let linkedContracts: Contact[] = await this.findContacts(
       [this.email],
-      [this.phoneNumber.toString()],
+      [this.phoneNumber],
       []
     );
     let fetchedEmails = new Set([this.email]);
-    let fetchedPhoneNumbers = new Set([this.phoneNumber.toString()]);
+    let fetchedPhoneNumbers = new Set([this.phoneNumber]);
     let fetchedIds = new Set(linkedContracts.map((contact) => contact.id));
     let foundAllLinkedContacts = false;
     while (!foundAllLinkedContacts) {
@@ -195,7 +195,7 @@ class IdentityProcessor {
     const isNewContact = !linkedContacts.some(
       (contact) =>
         contact.email === this.email &&
-        contact.phoneNumber === this.phoneNumber.toString()
+        contact.phoneNumber === this.phoneNumber
     );
     if (isNewContact) {
       const newContact = await this.createSecondaryContact(primaryContact);
@@ -203,23 +203,46 @@ class IdentityProcessor {
     }
 
     const distinctEmails = new Set(
-      secondaryContacts.map((contact) => contact.email)
+      secondaryContacts.map((contact) => contact.email).filter((email) => email)
     );
     distinctEmails.add(primaryContact.email);
     const distinctPhoneNumbers = new Set(
-      secondaryContacts.map((contact) => contact.phoneNumber)
+      secondaryContacts.map((contact) => contact.phoneNumber).filter((phoneNumber) => phoneNumber)
     );
     distinctPhoneNumbers.add(primaryContact.phoneNumber);
+
+    const distinctSecondaryContactIds = new Set(
+      secondaryContacts.map((contact) => contact.id).filter((id) => id)
+    );
 
     return {
       contact: {
         primaryContatctId: primaryContact.id,
-        emails: [...distinctEmails],
-        phoneNumbers: [...distinctPhoneNumbers],
-        secondaryContactIds: secondaryContacts.map((contact) => contact.id),
+        emails: sortByPrimary(
+          [...distinctEmails],
+          primaryContact.email
+        ),
+        phoneNumbers: sortByPrimary(
+          [...distinctPhoneNumbers],
+          primaryContact.phoneNumber
+        ),
+        secondaryContactIds: [...distinctSecondaryContactIds],
       },
     };
   }
 }
+
+function sortByPrimary<Type> (items: Type[], primary: Type): Type[] {
+  const sortedItems = items.sort((a, b) => {
+    if (a === primary) {
+      return -1;
+    }
+    if (b === primary) {
+      return 1;
+    }
+    return 0;
+  });
+  return sortedItems;
+};
 
 export default IdentityProcessor;
