@@ -19,6 +19,7 @@
     "build": "tsc --project ./",
     "start:dev": "nodemon src/server.ts",
     "start:prod": "node dist/server.js",
+    "start:prod-migrate": "npm run prisma:migrate && npm run start:prod",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:generate": "prisma generate",
     "prisma:init": "npm run prisma:migrate && npm run prisma:generate"
