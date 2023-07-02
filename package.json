@@ -1,7 +1,10 @@
 {
   "name": "fluxcart-backend-id-tracker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Backend for FluxCart ID Tracker",
+  "author": {
+    "name": "Souyama Debnath"
+  },
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^4.16.2",
