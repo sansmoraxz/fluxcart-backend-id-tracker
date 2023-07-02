@@ -6,9 +6,9 @@ model Contact {
   phoneNumber          String?
   email                String?
   linkedId             Int? // the ID of another Contact linked to this one
-  linkPrecedence       String? // "primary" if it's the first Contact in the link
+  linkPrecedence       String // "primary" if it's the first Contact in the link
   createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
+  updatedAt            DateTime              @updatedAt @default(now())
   deletedAt            DateTime?
 
   // for faster lookups
