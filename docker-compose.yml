@@ -1,0 +1,31 @@
+---
+version: '3.1'
+services:
+  db:
+    image: postgres:14.4-alpine
+    container_name: postgres-server
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: XXXXX
+      POSTGRES_USER: postgres
+      POSTGRES_DB: fluxcart
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fluxcart-server
+    restart: always
+    environment:
+      - DATABASE_URL=postgres://postgres:XXXXX@db:5432/fluxcart
+      - PORT=8000
+    # since the db is empty, we need to run the migrations first to create the tables
+    entrypoint: ["npm", "run", "start:prod-migrate"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
