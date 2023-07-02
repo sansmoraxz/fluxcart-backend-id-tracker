@@ -194,8 +194,8 @@ class IdentityProcessor {
     }
     const isNewContact = !linkedContacts.some(
       (contact) =>
-        contact.email === this.email &&
-        contact.phoneNumber === this.phoneNumber
+        contact.email == this.email &&
+        contact.phoneNumber == this.phoneNumber
     );
     if (isNewContact) {
       const newContact = await this.createSecondaryContact(primaryContact);
