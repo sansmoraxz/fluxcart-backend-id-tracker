@@ -30,3 +30,8 @@ curl --location 'localhost:8000/identify' \
 }'
 ```
 
+### List of endpoints
+
+- `POST /identify` - Identify a customer
+- `GET /db` - Get all customers in the database
+- `GET /` - Healthcheck endpoint (returns hello world)
