@@ -192,12 +192,13 @@ class IdentityProcessor {
         primaryContact
       );
     }
-    const isNewContact = !linkedContacts.some(
-      (contact) =>
-        contact.email == this.email &&
-        contact.phoneNumber == this.phoneNumber
+    const isNewEmail = !linkedContacts.some(
+      (contact) => contact.email === this.email
     );
-    if (isNewContact) {
+    const isNewPhoneNumber = !linkedContacts.some(
+      (contact) => contact.phoneNumber === this.phoneNumber
+    );
+    if (isNewEmail || isNewPhoneNumber) {
       const newContact = await this.createSecondaryContact(primaryContact);
       secondaryContacts.push(newContact);
     }
