@@ -201,15 +201,21 @@ class IdentityProcessor {
       const newContact = await this.createSecondaryContact(primaryContact);
       secondaryContacts.push(newContact);
     }
+
+    const distinctEmails = new Set(
+      secondaryContacts.map((contact) => contact.email)
+    );
+    distinctEmails.add(primaryContact.email);
+    const distinctPhoneNumbers = new Set(
+      secondaryContacts.map((contact) => contact.phoneNumber)
+    );
+    distinctPhoneNumbers.add(primaryContact.phoneNumber);
+
     return {
       contact: {
         primaryContatctId: primaryContact.id,
-        emails: [primaryContact.email].concat(
-          secondaryContacts.map((contact) => contact.email)
-        ),
-        phoneNumbers: [primaryContact.phoneNumber].concat(
-          secondaryContacts.map((contact) => contact.phoneNumber)
-        ),
+        emails: [...distinctEmails],
+        phoneNumbers: [...distinctPhoneNumbers],
         secondaryContactIds: secondaryContacts.map((contact) => contact.id),
       },
     };

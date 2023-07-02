@@ -25,7 +25,7 @@ routes.get("/db", async (req, res) => {
     const result = await dbclient.contact.findMany();
     return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 
